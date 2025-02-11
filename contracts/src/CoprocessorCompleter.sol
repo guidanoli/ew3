@@ -2,19 +2,15 @@
 
 pragma solidity ^0.8.28;
 
+import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
+
 import {CoprocessorAdapter} from "coprocessor-base-contract/CoprocessorAdapter.sol";
 
 import {Message, Option, Usage} from "./Types.sol";
 import {Callback} from "./Callback.sol";
 import {Completer} from "./Completer.sol";
 
-contract CoprocessorCompleter is CoprocessorAdapter, Completer {
-    /// @notice Locked amount recipient
-    address immutable _lockedAmountRecipient;
-
-    /// @notice Locked amount (safe to be withdrawn)
-    uint256 _lockedAmount;
-
+contract CoprocessorCompleter is CoprocessorAdapter, Completer, Ownable {
     /// @notice Completion data
     struct Completion {
         uint256 paidAmount;
@@ -26,6 +22,9 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     /// @notice Completions (index = id)
     Completion[] _completions;
 
+    /// @notice Owner balance (can be withdrawn)
+    uint256 _ownerBalance;
+
     /// @notice Amount of Ether is insufficient for completion
     error InsufficientPayment();
 
@@ -35,11 +34,10 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     /// @notice Completion was already done
     error CompletionAlreadyDone();
 
-    constructor(address taskIssuerAddress, bytes32 machineHash, address lockedAmountRecipient)
+    constructor(address taskIssuerAddress, bytes32 machineHash, address initialOwner)
         CoprocessorAdapter(taskIssuerAddress, machineHash)
-    {
-        _lockedAmountRecipient = lockedAmountRecipient;
-    }
+        Ownable(initialOwner)
+    {}
 
     /// @inheritdoc Completer
     function calculateCompletionCost(string calldata model, uint256 maxCompletionTokens, Message[] calldata messages)
@@ -96,19 +94,19 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
 
         // Effects
         completion.done = true;
-        _lockedAmount += completion.paidAmount - refund;
+        _ownerBalance += completion.paidAmount - refund;
 
         // Interactions
         completion.callback.receiveResult{value: refund}(completionId, messages, usage);
     }
 
-    function withdrawLockedAmount() external {
+    function withdraw() external {
         // Effects
-        uint256 value = _lockedAmount;
-        _lockedAmount = 0;
+        uint256 value = _ownerBalance;
+        _ownerBalance = 0;
 
         // Interactions
-        (bool success,) = _lockedAmountRecipient.call{value: value}("");
+        (bool success,) = owner().call{value: value}("");
         require(success, FailedWithdrawal());
     }
 

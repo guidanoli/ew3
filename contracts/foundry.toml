@@ -1,2 +1,5 @@
+[profile.default]
+remappings = ["openzeppelin-contracts/=./lib/openzeppelin-contracts/contracts/"]
+
 [fmt]
 line_length = 120
