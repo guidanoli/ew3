@@ -100,6 +100,10 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer, Ownable {
         completion.callback.receiveResult{value: refund}(completionId, messages, usage);
     }
 
+    function ownerBalance() external view returns (uint256) {
+        return _ownerBalance;
+    }
+
     function withdraw() external {
         // Effects
         uint256 value = _ownerBalance;
