@@ -8,7 +8,7 @@ import {Callback} from "./Callback.sol";
 interface Completer {
     /// @notice Returns an estimated amount of Wei necessary
     /// to request a completion
-    function calculateCompletionCost(string calldata model, uint256 maxCompletionTokens, uint256 promptLength)
+    function calculateCompletionCost(string calldata model, uint256 maxCompletionTokens, Message[] calldata messages)
         external
         view
         returns (uint256);

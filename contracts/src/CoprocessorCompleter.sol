@@ -42,13 +42,13 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     }
 
     /// @inheritdoc Completer
-    function calculateCompletionCost(string calldata model, uint256 maxCompletionTokens, uint256 promptLength)
+    function calculateCompletionCost(string calldata model, uint256 maxCompletionTokens, Message[] calldata messages)
         public
         pure
         override
         returns (uint256)
     {
-        return _calculateCompletionCost(model, maxCompletionTokens, promptLength);
+        return _calculateCompletionCostCalldata(model, maxCompletionTokens, _calculatePromptLength(messages));
     }
 
     /// @inheritdoc Completer
@@ -61,7 +61,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     ) external payable override returns (uint256 completionId) {
         // Checks
         uint256 promptLength = _calculatePromptLength(messages);
-        uint256 completionCost = _calculateCompletionCost(model, maxCompletionTokens, promptLength);
+        uint256 completionCost = _calculateCompletionCostCalldata(model, maxCompletionTokens, promptLength);
         require(msg.value >= completionCost, InsufficientPayment());
 
         // Effects
@@ -87,7 +87,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
 
         require(!completion.done, CompletionAlreadyDone());
 
-        uint256 completionCost = _calculateCompletionCost(model, usage.completionTokens, completion.promptLength);
+        uint256 completionCost = _calculateCompletionCostMemory(model, usage.completionTokens, completion.promptLength);
         uint256 refund;
 
         if (completion.paidAmount > completionCost) {
@@ -118,7 +118,15 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         }
     }
 
-    function _calculateCompletionCost(string memory, uint256, uint256) internal pure returns (uint256) {
+    function _calculateCompletionCostCalldata(string calldata model, uint256 maxCompletionTokens, uint256 promptLength)
+        internal
+        pure
+        returns (uint256)
+    {
+        return _calculateCompletionCostMemory(model, maxCompletionTokens, promptLength);
+    }
+
+    function _calculateCompletionCostMemory(string memory, uint256, uint256) internal pure returns (uint256) {
         return 0; // dummy value
     }
 }
