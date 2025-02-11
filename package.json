@@ -3,5 +3,6 @@
     "private": true,
     "dependencies": {
         "@cartesi/cli": "^1.5.0"
-    }
+    },
+    "packageManager": "pnpm@9.9.0"
 }
