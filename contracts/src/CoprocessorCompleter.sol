@@ -42,7 +42,16 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     }
 
     /// @inheritdoc Completer
-    function calculateCompletionCost(bytes32, uint256, uint256) public pure override returns (uint256) {
+    function calculateCompletionCost(string calldata model, uint256 maxCompletionTokens, uint256 promptLength)
+        public
+        pure
+        override
+        returns (uint256)
+    {
+        return _calculateCompletionCost(model, maxCompletionTokens, promptLength);
+    }
+
+    function _calculateCompletionCost(string memory, uint256, uint256) internal pure returns (uint256) {
         return 0; // dummy value
     }
 
@@ -56,8 +65,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     ) external payable override returns (uint256 completionId) {
         // Checks
         uint256 promptLength = _calculatePromptLength(messages);
-        uint256 completionCost =
-            calculateCompletionCost(keccak256(abi.encodePacked(model)), maxCompletionTokens, promptLength);
+        uint256 completionCost = _calculateCompletionCost(model, maxCompletionTokens, promptLength);
         require(msg.value >= completionCost, InsufficientPayment());
 
         // Effects
@@ -83,8 +91,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
 
         require(!completion.done, CompletionAlreadyDone());
 
-        uint256 completionCost =
-            calculateCompletionCost(keccak256(abi.encodePacked(model)), usage.completionTokens, completion.promptLength);
+        uint256 completionCost = _calculateCompletionCost(model, usage.completionTokens, completion.promptLength);
         uint256 refund;
 
         if (completion.paidAmount > completionCost) {
