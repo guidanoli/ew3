@@ -1,0 +1,7 @@
+node_modules
+.cartesi
+.venv
+output.car
+output.car.json
+output.cid
+output.size

@@ -1,0 +1,7 @@
+{
+    "name": "ew3",
+    "private": true,
+    "dependencies": {
+        "@cartesi/cli": "^1.5.0"
+    }
+}
