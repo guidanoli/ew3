@@ -7,9 +7,5 @@ import {Message, Usage} from "./Types.sol";
 interface Callback {
     /// @notice Receive completion result back
     /// @dev Might come with change in Wei
-    function receiveResult(
-        uint256 chatCompletionId,
-        Message[] calldata messages,
-        Usage calldata usage
-    ) external payable;
+    function receiveResult(uint256 completionId, Message[] calldata messages, Usage calldata usage) external payable;
 }

@@ -10,9 +10,10 @@ enum Role {
 }
 
 /// @notice A message from someone
+/// @notice content is a UTF-8 encoded byte array
 struct Message {
     Role role;
-    string content;
+    bytes content;
 }
 
 /// @notice Extra LLM options
@@ -25,4 +26,19 @@ struct Option {
 struct Usage {
     uint256 promptTokens;
     uint256 completionTokens;
+}
+
+/// @notice Completion request
+struct Request {
+    string model;
+    uint256 maxCompletionTokens;
+    Message[] messages;
+    Option[] options;
+}
+
+/// @notice Completion result
+struct Result {
+    uint256 completionId;
+    Message[] messages;
+    Usage usage;
 }
