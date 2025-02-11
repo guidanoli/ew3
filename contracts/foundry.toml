@@ -1,1 +1,2 @@
-[profile.default]
+[fmt]
+line_length = 80

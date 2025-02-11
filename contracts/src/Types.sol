@@ -26,5 +26,3 @@ struct Usage {
     uint256 promptTokens;
     uint256 completionTokens;
 }
- 
-
