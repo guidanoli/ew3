@@ -51,10 +51,6 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         return _calculateCompletionCost(model, maxCompletionTokens, promptLength);
     }
 
-    function _calculateCompletionCost(string memory, uint256, uint256) internal pure returns (uint256) {
-        return 0; // dummy value
-    }
-
     /// @inheritdoc Completer
     function askCompletion(
         string calldata model,
@@ -120,5 +116,9 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         for (uint256 i; i < messages.length; ++i) {
             sum += messages[i].content.length;
         }
+    }
+
+    function _calculateCompletionCost(string memory, uint256, uint256) internal pure returns (uint256) {
+        return 0; // dummy value
     }
 }
