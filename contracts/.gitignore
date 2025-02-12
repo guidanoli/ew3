@@ -1,3 +1,9 @@
+# Completion Ids dir
+completionIds/
+
+# Requests dir
+requests/
+
 # Deployments dir
 deployments/
 

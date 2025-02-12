@@ -1,6 +1,10 @@
 [profile.default]
 remappings = ["openzeppelin-contracts/=./lib/openzeppelin-contracts/contracts/"]
-fs_permissions = [{ access = "read-write", path = "./deployments" }]
+fs_permissions = [
+    { access = "read-write", path = "./deployments" },
+    { access = "read", path = "./requests" },
+    { access = "read-write", path = "./completionIds" }
+]
 
 [fmt]
 line_length = 120
