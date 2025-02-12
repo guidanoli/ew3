@@ -1,0 +1,24 @@
+{
+    "model": "SmolLM2-135M-Instruct",
+    "maxCompletionTokens": 100,
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant."
+        },
+        {
+            "role": "user",
+            "content": "Who are you?"
+        }
+    ],
+    "options": [
+        {
+            "key": "temperature",
+            "value": "0.7"
+        },
+        {
+            "key": "seed",
+            "value": "42"
+        }
+    ]
+}
