@@ -15,11 +15,11 @@ pnpm exec cartesi "$@"
 
 In order to deploy the [`CoprocessorCompleter`](./contracts/src/CoprocessorCompleter.sol) contract, you can use the [`deploy.sh`](./deploy.sh) Shell script.
 It is basically a wrapper around a [`forge create`](https://book.getfoundry.sh/reference/forge/forge-create) command that provides the correct the constructor arguments.
-You only have to provide the deployer credentials, which may vary depending on the type of network.
+Beware that, when running this Shell script, you must provide the deployer credentials, which may depend on the type of network to which you would like to deploy the contract.
 
 ### Devnet
 
-For a local devnet, you can use any of the dummy accounts provided.
+For a local devnet, you can deploy the contract using any of the available dummy accounts.
 In the command below, we use `cast` and `jq` to extract the first account from the list.
 
 ```sh
