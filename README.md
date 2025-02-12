@@ -48,9 +48,4 @@ export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f
 ./deploy.sh --fork-url http://127.0.0.1:8545/
 ```
 
-This command will create a `contracts/deployments.json` file, which will contain the address of the newly-deployed `CoprocessorCompleter` contract.
-You can extract this address from the file using `jq`.
-
-```sh
-jq -r .CoprocessorCompleter contracts/deployments.json
-```
+This command will create a `contracts/deployments/CoprocessorCompleter` file, which will contain the address of the newly-deployed `CoprocessorCompleter` contract.

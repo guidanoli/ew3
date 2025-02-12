@@ -1,5 +1,5 @@
-# Deployments file
-deployments.json
+# Deployments dir
+deployments/
 
 # Compiler files
 cache/
