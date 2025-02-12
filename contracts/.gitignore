@@ -1,3 +1,6 @@
+# Deployments file
+deployments.json
+
 # Compiler files
 cache/
 out/

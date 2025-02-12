@@ -11,17 +11,45 @@ and store the following code in an executable file named `cartesi` somewhere acc
 pnpm exec cartesi "$@"
 ```
 
-## Deployment
+## Starting up a devnet
 
-In order to deploy the [`CoprocessorCompleter`](./contracts/src/CoprocessorCompleter.sol) contract, you can use the [`deploy.sh`](./deploy.sh) Shell script.
-It is basically a wrapper around a [`forge create`](https://book.getfoundry.sh/reference/forge/forge-create) command that provides the correct the constructor arguments.
-Beware that, when running this Shell script, you must provide the deployer credentials, which may depend on the type of network to which you would like to deploy the contract.
-
-### Devnet
-
-For a local devnet, you can deploy the contract using any of the available dummy accounts.
-In the command below, we use `cast` and `jq` to extract the first account from the list.
+In order to test the application locally, you first need to start up a devnet.
+You can do so by running the following command on the project root.
+This might take a while.
 
 ```sh
-./deploy.sh --broadcast --unlocked --from $(cast rpc eth_accounts | jq -r '.[0]')
+cartesi-coprocessor start-devnet
+```
+
+You can then later stop the devnet at any time by running the following command on the project root.
+
+```sh
+cartesi-coprocessor stop-devnet
+```
+
+## Publishing
+
+Once your devnet is running, you can publish the machine by running the following command on the project root.
+
+```sh
+cartesi-coprocessor publish --network devnet
+```
+
+## Deployment
+
+The main contract in the project is called [`CoprocessorCompleter`](./contracts/src/CoprocessorCompleter.sol).
+In order to deploy it, you can run the [`deploy.sh`](./deploy.sh) Shell script while on the project root.
+It is basically a wrapper around a [`forge script`](https://book.getfoundry.sh/reference/forge/forge-create) command that provides the correct the arguments.
+Beware that, when running this Shell script, you must provide the deployer private key through the `PRIVATE_KEY` environment variable.
+Below is an example for deploying to a local devnet.
+
+```sh
+PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 ./deploy.sh --fork-url http://127.0.0.1:8545/
+```
+
+This command will create a `contracts/deployments.json` file, which will contain the address of the newly-deployed `CoprocessorCompleter` contract.
+You can extract this address from the file using `jq`.
+
+```sh
+jq -r .CoprocessorCompleter contracts/deployments.json
 ```
