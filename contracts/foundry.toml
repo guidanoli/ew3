@@ -4,3 +4,4 @@ fs_permissions = [{ access = "read-write", path = "./deployments" }]
 
 [fmt]
 line_length = 120
+ignore = ["lib"]
