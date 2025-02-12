@@ -1,0 +1,6 @@
+--find-links https://prototyp3-dev.github.io/pip-wheels-riscv/wheels/
+python-cartesi
+pycryptodome==3.19.0
+requests
+pytest
+openai
