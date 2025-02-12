@@ -10,10 +10,9 @@ enum Role {
 }
 
 /// @notice A message from someone
-/// @notice content is a UTF-8 encoded byte array
 struct Message {
     Role role;
-    bytes content;
+    string content;
 }
 
 /// @notice Extra LLM options
