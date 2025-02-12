@@ -5,3 +5,4 @@ output.car
 output.car.json
 output.cid
 output.size
+*.completionId

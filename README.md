@@ -47,7 +47,7 @@ cartesi-coprocessor publish --network devnet
 The main contract in the project is called [`CoprocessorCompleter`](./contracts/src/CoprocessorCompleter.sol).
 Another useful contract is [`SimpleCallback`](./contracts/src/SimpleCallback.sol), which, as the name may imply, is a simple callback contract example.
 In order to deploy them, you can run the [`deploy.sh`](./deploy.sh) Shell script while on the project root.
-It is basically a wrapper around a [`forge script`](https://book.getfoundry.sh/reference/forge/forge-create) command that provides the correct the arguments.
+It is basically a wrapper around a [`forge script`] command that provides the correct the arguments.
 Beware that, when running this Shell script, you must provide the deployer private key through the `PRIVATE_KEY` environment variable.
 Below is an example for deploying to a local devnet.
 
@@ -57,3 +57,23 @@ export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f
 ```
 
 This command will create `contracts/deployments/<ContractName>` files for each deployed contract, contain their respective addresses.
+
+## Sending tasks
+
+After deploying the necessary contracts, you can now send tasks to the operator through the [`send.sh`](./send.sh) Shell script.
+The script takes one positional argument: the path of a JSON file with the completion request details.
+The schema of this JSON file can be deduced from [this example](./examples/request.json).
+And, just like the deployment script, this script is also a wrapper around [`forge script`],
+which means that you can provide any extra options after the positional argument.
+Also, make sure the `PRIVATE_KEY` environment variable is set to the private key of an account with some Ether.
+
+```sh
+export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+./send.sh examples/request.json --fork-url http://127.0.0.1:8545/
+```
+
+You should see the operator processing the input from the Docker Desktop UI.
+This command will create a `examples/request.json.completionId` with the completion ID of the request for future reference.
+You can delete this file afterwards, if you want.
+
+[`forge script`]: https://book.getfoundry.sh/reference/forge/forge-script
