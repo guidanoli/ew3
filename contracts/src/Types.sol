@@ -4,9 +4,9 @@ pragma solidity ^0.8.28;
 
 /// @notice A role
 enum Role {
-    ROLE_SYSTEM,
-    ROLE_ASSISTANT,
-    ROLE_USER
+    SYSTEM,
+    ASSISTANT,
+    USER
 }
 
 /// @notice A message from someone
