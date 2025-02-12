@@ -96,7 +96,7 @@ contract SendScript is Script {
         bytes memory encodedRawRequest = vm.parseJson(requestJson);
         RawRequest memory rawRequest = abi.decode(encodedRawRequest, (RawRequest));
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-        uint256 completionId = coprocessorCompleter.askForCompletion(
+        uint256 completionId = coprocessorCompleter.requestCompletion(
             rawRequest.model,
             rawRequest.maxCompletionTokens,
             rawRequest.messages.convert(),

@@ -14,7 +14,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     constructor(address taskIssuerAddress, bytes32 machineHash) CoprocessorAdapter(taskIssuerAddress, machineHash) {}
 
     /// @inheritdoc Completer
-    function askForCompletion(
+    function requestCompletion(
         string calldata modelName,
         uint256 maxCompletionTokens,
         Message[] calldata messages,

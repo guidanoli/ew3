@@ -8,7 +8,7 @@ import {Callback} from "./Callback.sol";
 interface Completer {
     /// @notice Ask a LLM to complete
     /// @return completionId A chat completion ID
-    function askForCompletion(
+    function requestCompletion(
         string calldata modelName,
         uint256 maxCompletionTokens,
         Message[] calldata messages,
