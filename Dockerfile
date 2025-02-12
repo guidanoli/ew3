@@ -1,37 +1,58 @@
 # syntax=docker.io/docker/dockerfile:1
-FROM --platform=linux/riscv64 cartesi/python:3.10-slim-jammy
 
+###############################
+## models downloader
+FROM scratch AS models
+ADD https://huggingface.co/unsloth/SmolLM2-135M-Instruct-GGUF/resolve/main/SmolLM2-135M-Instruct-Q8_0.gguf /models/SmolLM2-135M-Instruct-Q8_0.gguf
+
+###############################
+# llama.cpp builder
+FROM --platform=linux/riscv64 ubuntu:24.04 AS llamacpp
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        build-essential git cmake ninja-build ca-certificates
+
+# Build llama.cpp
+RUN git clone --branch b4689 --depth=1 https://github.com/ggerganov/llama.cpp
+RUN cd llama.cpp && \
+    cmake -B build -G Ninja -DGGML_RVV=OFF && \
+    ninja -C build llama-cli llama-server
+
+###############################
+# rootfs builder
+FROM --platform=linux/riscv64 ubuntu:24.04 AS rootfs
+
+# Configure machine memory
 LABEL io.cartesi.rollups.sdk_version=0.11.1
-LABEL io.cartesi.rollups.ram_size=128Mi
+LABEL io.cartesi.rollups.ram_size=4096Mi
 
-ARG DEBIAN_FRONTEND=noninteractive
-RUN <<EOF
-set -e
-apt-get update
-apt-get install -y --no-install-recommends \
-  busybox-static=1:1.30.1-7ubuntu3
-rm -rf /var/lib/apt/lists/* /var/log/* /var/cache/*
-useradd --create-home --user-group dapp
-EOF
+# Install required packages
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        busybox-static \
+        libgomp1 \
+        python3 python3-venv python3-pip python3-openai python3-requests && \
+    rm -rf /var/lib/apt/lists/* /var/log/* /var/cache/*
 
+# Install guest tools
 ARG MACHINE_EMULATOR_TOOLS_VERSION=0.16.1
 ADD https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb /
-RUN dpkg -i /machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb \
-  && rm /machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
+RUN dpkg -i /machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb && \
+    rm /machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
 
-ENV PATH="/opt/cartesi/bin:${PATH}"
+# Install models
+COPY --chown=dapp:dapp --from=models /models /home/dapp/models
 
-WORKDIR /opt/cartesi/dapp
-COPY ./requirements.txt .
+# Install llama.cpp
+COPY --from=llamacpp /llama.cpp /llama.cpp
+RUN ln -s /llama.cpp/build/bin/llama-cli /usr/bin/llama-cli && \
+    ln -s /llama.cpp/build/bin/llama-server /usr/bin/llama-server
 
-RUN <<EOF
-set -e
-pip install -r requirements.txt --no-cache
-find /usr/local/lib -type d -name __pycache__ -exec rm -r {} +
-EOF
-
+# Install dapp
+WORKDIR /home/dapp
 COPY ./dapp.py .
 
+# Set entrypoint
 ENV ROLLUP_HTTP_SERVER_URL="http://127.0.0.1:5004"
 
 ENTRYPOINT ["rollup-init"]
