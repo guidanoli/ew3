@@ -8,7 +8,15 @@
         },
         {
             "role": "user",
-            "content": "Who are you?"
+            "content": "Hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hi, how can I help you?"
+        },
+        {
+            "role": "user",
+            "content": "So, I would like to know more about the overlap between AI and blockchain."
         }
     ],
     "options": [
