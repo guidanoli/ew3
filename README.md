@@ -2,6 +2,13 @@
 
 ## Setup
 
+This repository contains [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+In order to properly initialize them, please, run the following command.
+
+```sh
+git submodule update --init --recursive
+```
+
 Make sure you have all the [dependencies](https://docs.mugen.builders/cartesi-co-processor-tutorial/installation) installed.
 If you don't want to install the Cartesi CLI globally, you can do `pnpm i`
 and store the following code in an executable file named `cartesi` somewhere accessible by your `PATH` environment variable:
