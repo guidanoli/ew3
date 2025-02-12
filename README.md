@@ -44,7 +44,8 @@ Beware that, when running this Shell script, you must provide the deployer priva
 Below is an example for deploying to a local devnet.
 
 ```sh
-PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 ./deploy.sh --fork-url http://127.0.0.1:8545/
+export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+./deploy.sh --fork-url http://127.0.0.1:8545/
 ```
 
 This command will create a `contracts/deployments.json` file, which will contain the address of the newly-deployed `CoprocessorCompleter` contract.
