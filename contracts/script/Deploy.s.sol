@@ -35,11 +35,9 @@ contract DeployScript is Script {
             if (size != 0) return;
         }
         // Deploy contract if target address has no code yet
-        {
-            vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-            CoprocessorCompleter coprocessorCompleter = new CoprocessorCompleter{salt: salt}(taskIssuerAddress, machineHash);
-            require(address(coprocessorCompleter) == coprocessorCompleterAddress, "address mismatch");
-            vm.stopBroadcast();
-        }
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        CoprocessorCompleter coprocessorCompleter = new CoprocessorCompleter{salt: salt}(taskIssuerAddress, machineHash);
+        require(address(coprocessorCompleter) == coprocessorCompleterAddress, "address mismatch");
+        vm.stopBroadcast();
     }
 }
