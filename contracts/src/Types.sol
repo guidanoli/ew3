@@ -27,18 +27,3 @@ struct Usage {
     uint256 promptTokens;
     uint256 completionTokens;
 }
-
-/// @notice Completion request
-struct Request {
-    string model;
-    uint256 maxCompletionTokens;
-    Message[] messages;
-    Option[] options;
-}
-
-/// @notice Completion result
-struct Result {
-    uint256 completionId;
-    Message[] messages;
-    Usage usage;
-}

@@ -6,21 +6,13 @@ import {Message, Option} from "./Types.sol";
 import {Callback} from "./Callback.sol";
 
 interface Completer {
-    /// @notice Returns an estimated amount of Wei necessary
-    /// to request a completion
-    function calculateCompletionCost(string calldata model, uint256 maxCompletionTokens, Message[] calldata messages)
-        external
-        view
-        returns (uint256);
-
     /// @notice Ask a LLM to complete
-    /// @dev Enough Ether must be provided
     /// @return completionId A chat completion ID
-    function askCompletion(
-        string calldata model,
+    function askForCompletion(
+        string calldata modelName,
         uint256 maxCompletionTokens,
         Message[] calldata messages,
         Option[] calldata options,
         Callback callback
-    ) external payable returns (uint256 completionId);
+    ) external returns (uint256 completionId);
 }
