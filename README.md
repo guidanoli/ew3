@@ -45,7 +45,8 @@ cartesi-coprocessor publish --network devnet
 ## Deployment
 
 The main contract in the project is called [`CoprocessorCompleter`](./contracts/src/CoprocessorCompleter.sol).
-In order to deploy it, you can run the [`deploy.sh`](./deploy.sh) Shell script while on the project root.
+Another useful contract is [`SimpleCallback`](./contracts/src/SimpleCallback.sol), which, as the name may imply, is a simple callback contract example.
+In order to deploy them, you can run the [`deploy.sh`](./deploy.sh) Shell script while on the project root.
 It is basically a wrapper around a [`forge script`](https://book.getfoundry.sh/reference/forge/forge-create) command that provides the correct the arguments.
 Beware that, when running this Shell script, you must provide the deployer private key through the `PRIVATE_KEY` environment variable.
 Below is an example for deploying to a local devnet.
@@ -55,4 +56,4 @@ export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f
 ./deploy.sh --fork-url http://127.0.0.1:8545/
 ```
 
-This command will create a `contracts/deployments/CoprocessorCompleter` file, which will contain the address of the newly-deployed `CoprocessorCompleter` contract.
+This command will create `contracts/deployments/<ContractName>` files for each deployed contract, contain their respective addresses.
