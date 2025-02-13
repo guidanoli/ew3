@@ -18,6 +18,8 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
 
     mapping(string => ModelCostTable) public modelCostTables;
 
+    mapping(uint256 => uint256) public completionPayments;
+
     struct Model {
         ModelCostTable costs;
         string name;
@@ -48,8 +50,10 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         returns (uint256 completionId)
     {
         uint256 cost = getCompletionRequestCost(request);
-        require(cost <= msg.value, InsufficientPayment(cost, msg.value));
+        uint256 payment = msg.value;
+        require(cost <= payment, InsufficientPayment(cost, payment));
         completionId = nextCompletionId++;
+        completionPayments[completionId] = payment;
         callCoprocessor(
             abi.encode(
                 completionId, request.model, request.maxCompletionTokens, request.messages, request.options, callback
