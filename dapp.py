@@ -192,7 +192,8 @@ class LlamaCppServer:
 
         client = OpenAI(
             api_key=LOCAL_API_KEY,
-            base_url=self.base_url
+            base_url=self.base_url,
+            timeout=24*60*60,
         )
 
         payload = [dict(msg) for msg in messages]
