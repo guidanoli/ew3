@@ -7,8 +7,13 @@ import {CoprocessorAdapter} from "coprocessor-base-contract/CoprocessorAdapter.s
 import {Request, Message, Option, Usage} from "./Types.sol";
 import {Callback} from "./Callback.sol";
 import {Completer} from "./Completer.sol";
+import {Math} from "./Math.sol";
+import {String} from "./String.sol";
 
 contract CoprocessorCompleter is CoprocessorAdapter, Completer {
+    using Math for uint256;
+    using String for string;
+
     uint256 nextCompletionId;
 
     struct ModelCostTable {
@@ -16,9 +21,14 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         uint256 perPromptToken;
     }
 
-    mapping(string => ModelCostTable) public modelCostTables;
+    mapping(bytes32 => ModelCostTable) public modelCostTables;
 
-    mapping(uint256 => uint256) public completionPayments;
+    struct PaymentReceipt {
+        bytes32 modelHash;
+        uint256 value;
+    }
+
+    mapping(uint256 => PaymentReceipt) public paymentReceipts;
 
     struct Model {
         ModelCostTable costs;
@@ -30,16 +40,13 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     {
         for (uint256 i; i < models.length; ++i) {
             Model memory model = models[i];
-            modelCostTables[model.name] = model.costs;
+            modelCostTables[model.name.hash()] = model.costs;
         }
     }
 
     /// @inheritdoc Completer
-    function getCompletionRequestCost(Request calldata request) public view override returns (uint256) {
-        ModelCostTable storage modelCostTable = modelCostTables[request.model];
-        uint256 maxPromptTokens = _calculateMaxPromptTokens(request.messages);
-        uint256 maxCompletionTokens = request.maxCompletionTokens;
-        return _calculateCompletionCost(modelCostTable, maxPromptTokens, maxCompletionTokens);
+    function getCompletionRequestCost(Request calldata request) public view override returns (uint256 cost) {
+        (, cost) = _getCompletionRequestCost(request);
     }
 
     /// @inheritdoc Completer
@@ -49,11 +56,11 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         override
         returns (uint256 completionId)
     {
-        uint256 cost = getCompletionRequestCost(request);
+        (bytes32 modelHash, uint256 cost) = _getCompletionRequestCost(request);
         uint256 payment = msg.value;
         require(cost <= payment, InsufficientPayment(cost, payment));
         completionId = nextCompletionId++;
-        completionPayments[completionId] = payment;
+        paymentReceipts[completionId] = PaymentReceipt({modelHash: modelHash, value: payment});
         callCoprocessor(
             abi.encode(
                 completionId, request.model, request.maxCompletionTokens, request.messages, request.options, callback
@@ -68,7 +75,24 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         Message[] memory messages;
         Usage memory usage;
         (completionId, callback, messages, usage) = abi.decode(notice, (uint256, Callback, Message[], Usage));
-        callback.receiveResult(completionId, messages, usage);
+        PaymentReceipt storage paymentReceipt = paymentReceipts[completionId];
+        ModelCostTable storage modelCostTable = modelCostTables[paymentReceipt.modelHash];
+        uint256 cost = _calculateCompletionCost(modelCostTable, usage.promptTokens, usage.completionTokens);
+        uint256 refund = paymentReceipt.value.monus(cost).min(address(this).balance);
+        callback.receiveResult{value: refund}(completionId, messages, usage);
+    }
+
+    /// @notice Calculate and return the hash of the model name, and calculate the completion request cost
+    function _getCompletionRequestCost(Request calldata request)
+        internal
+        view
+        returns (bytes32 modelHash, uint256 cost)
+    {
+        modelHash = request.model.hash();
+        ModelCostTable storage modelCostTable = modelCostTables[modelHash];
+        uint256 maxPromptTokens = _calculateMaxPromptTokens(request.messages);
+        uint256 maxCompletionTokens = request.maxCompletionTokens;
+        cost = _calculateCompletionCost(modelCostTable, maxPromptTokens, maxCompletionTokens);
     }
 
     /// @notice Calculate the maximum number of prompt tokens from a list of messages
