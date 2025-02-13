@@ -11,15 +11,15 @@ import {Completer} from "./Completer.sol";
 contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     uint256 nextCompletionId;
 
-    struct ModelCosts {
+    struct ModelCostTable {
         uint256 perCompletionToken;
         uint256 perPromptToken;
     }
 
-    mapping(string => ModelCosts) public modelCosts;
+    mapping(string => ModelCostTable) public modelCostTables;
 
     struct Model {
-        ModelCosts costs;
+        ModelCostTable costs;
         string name;
     }
 
@@ -28,13 +28,16 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     {
         for (uint256 i; i < models.length; ++i) {
             Model memory model = models[i];
-            modelCosts[model.name] = model.costs;
+            modelCostTables[model.name] = model.costs;
         }
     }
 
     /// @inheritdoc Completer
-    function getCompletionRequestCost(Request calldata) public pure override returns (uint256) {
-        return 0;
+    function getCompletionRequestCost(Request calldata request) public view override returns (uint256) {
+        ModelCostTable storage modelCostTable = modelCostTables[request.model];
+        uint256 maxPromptTokens = _calculateMaxPromptTokens(request.messages);
+        uint256 maxCompletionTokens = request.maxCompletionTokens;
+        return _calculateCompletionCost(modelCostTable, maxPromptTokens, maxCompletionTokens);
     }
 
     /// @inheritdoc Completer
@@ -62,5 +65,23 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         Usage memory usage;
         (completionId, callback, messages, usage) = abi.decode(notice, (uint256, Callback, Message[], Usage));
         callback.receiveResult(completionId, messages, usage);
+    }
+
+    /// @notice Calculate the maximum number of prompt tokens from a list of messages
+    /// @dev We use the sum of the message lengths as the upper bound
+    function _calculateMaxPromptTokens(Message[] calldata messages) internal pure returns (uint256 sum) {
+        for (uint256 i; i < messages.length; ++i) {
+            Message calldata message = messages[i];
+            sum += bytes(message.content).length;
+        }
+    }
+
+    /// @notice Calculate the completion cost from a model cost table and number of prompt and completion tokens
+    function _calculateCompletionCost(
+        ModelCostTable storage modelCostTable,
+        uint256 promptTokens,
+        uint256 completionTokens
+    ) internal view returns (uint256) {
+        return promptTokens * modelCostTable.perPromptToken + completionTokens * modelCostTable.perCompletionToken;
     }
 }
