@@ -1,22 +1,10 @@
 {
     "model": "SmolLM2-135M-Instruct",
-    "maxCompletionTokens": 100,
+    "maxCompletionTokens": 1,
     "messages": [
         {
-            "role": "system",
-            "content": "You are a helpful assistant."
-        },
-        {
             "role": "user",
-            "content": "Hello"
-        },
-        {
-            "role": "assistant",
-            "content": "Hi, how can I help you?"
-        },
-        {
-            "role": "user",
-            "content": "So, I would like to know more about the overlap between AI and blockchain."
+            "content": "Who are you?"
         }
     ],
     "options": [
