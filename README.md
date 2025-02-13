@@ -53,7 +53,7 @@ Below is an example for deploying to a local devnet.
 
 ```sh
 export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-./deploy.sh --fork-url http://127.0.0.1:8545/
+./deploy.sh --fork-url localhost:8545
 ```
 
 This command will create `contracts/deployments/<ContractName>` files for each deployed contract, contain their respective addresses.
@@ -69,7 +69,7 @@ Also, make sure the `PRIVATE_KEY` environment variable is set to the private key
 
 ```sh
 export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-./send.sh examples/request.json --fork-url http://127.0.0.1:8545/
+./send.sh examples/request.json --fork-url localhost:8545
 ```
 
 You should see the operator processing the input from the Docker Desktop UI.
