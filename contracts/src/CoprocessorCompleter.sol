@@ -11,7 +11,26 @@ import {Completer} from "./Completer.sol";
 contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     uint256 nextCompletionId;
 
-    constructor(address taskIssuerAddress, bytes32 machineHash) CoprocessorAdapter(taskIssuerAddress, machineHash) {}
+    struct ModelCosts {
+        uint256 perCompletionToken;
+        uint256 perPromptToken;
+    }
+
+    mapping(string => ModelCosts) public modelCosts;
+
+    struct Model {
+        ModelCosts costs;
+        string name;
+    }
+
+    constructor(address taskIssuer, bytes32 machineHash, Model[] memory models)
+        CoprocessorAdapter(taskIssuer, machineHash)
+    {
+        for (uint256 i; i < models.length; ++i) {
+            Model memory model = models[i];
+            modelCosts[model.name] = model.costs;
+        }
+    }
 
     /// @inheritdoc Completer
     function getCompletionRequestCost(Request calldata) public pure override returns (uint256) {

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "SmolLM2-135M-Instruct",
+    "costs": {
+      "perPromptToken": 1,
+      "perCompletionToken": 2
+    }
+  },
+  {
+    "name": "SmolLM2-360M-Instruct",
+    "costs": {
+      "perPromptToken": 2,
+      "perCompletionToken": 4
+    }
+  },
+  {
+    "name": "Qwen2.5-0.5B-Instruct",
+    "costs": {
+      "perPromptToken": 4,
+      "perCompletionToken": 8
+    }
+  },
+  {
+    "name": "Qwen2.5-Coder-0.5B-Instruct",
+    "costs": {
+      "perPromptToken": 4,
+      "perCompletionToken": 8
+    }
+  },
+  {
+    "name": "Qwen2.5-1.5B-Instruct",
+    "costs": {
+      "perPromptToken": 12,
+      "perCompletionToken": 24
+    }
+  },
+  {
+    "name": "Qwen2.5-Coder-1.5B-Instruct",
+    "costs": {
+      "perPromptToken": 12,
+      "perCompletionToken": 24
+    }
+  },
+  {
+    "name": "Qwen2.5-Math-1.5B-Instruct",
+    "costs": {
+      "perPromptToken": 12,
+      "perCompletionToken": 24
+    }
+  },
+  {
+    "name": "SmolLM2-1.7B-Instruct",
+    "costs": {
+      "perPromptToken": 16,
+      "perCompletionToken": 32
+    }
+  },
+  {
+    "name": "DeepSeek-R1-Distill-Qwen-1.5B",
+    "costs": {
+      "perPromptToken": 20,
+      "perCompletionToken": 40
+    }
+  },
+  {
+    "name": "DeepScaleR-1.5B-Preview",
+    "costs": {
+      "perPromptToken": 20,
+      "perCompletionToken": 40
+    }
+  }
+]

@@ -66,6 +66,11 @@ export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f
 
 This command will create `contracts/deployments/<ContractName>` files for each deployed contract, contain their respective addresses.
 
+### Model costs
+
+Model costs are defined in the `models.json` file.
+If you would like to tweak the costs, simply edit the file, and new deployings should use the new values.
+
 ## Sending tasks
 
 After deploying the necessary contracts, you can now send tasks to the operator through the [`send.sh`](./send.sh) Shell script.
