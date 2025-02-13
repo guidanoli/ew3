@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.28;
 
-import {Message, Option} from "./Types.sol";
+import {Request} from "./Types.sol";
 import {Callback} from "./Callback.sol";
 
 interface Completer {
@@ -10,19 +10,12 @@ interface Completer {
     error InsufficientPayment(uint256 cost, uint256 payment);
 
     /// @notice Get the cost (in Wei) of requesting a completion
-    function getCompletionRequestCost(
-        string calldata modelName,
-        uint256 maxCompletionTokens,
-        Message[] calldata messages
-    ) external view returns (uint256);
+    function getCompletionRequestCost(Request calldata request) external view returns (uint256);
 
     /// @notice Ask a LLM to complete
     /// @return completionId A chat completion ID
-    function requestCompletion(
-        string calldata modelName,
-        uint256 maxCompletionTokens,
-        Message[] calldata messages,
-        Option[] calldata options,
-        Callback callback
-    ) external payable returns (uint256 completionId);
+    function requestCompletion(Request calldata request, Callback callback)
+        external
+        payable
+        returns (uint256 completionId);
 }

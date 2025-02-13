@@ -26,3 +26,11 @@ struct Usage {
     uint256 promptTokens;
     uint256 completionTokens;
 }
+
+/// @notice LLM completion request
+struct Request {
+    string modelName;
+    uint256 maxCompletionTokens;
+    Message[] messages;
+    Option[] options;
+}

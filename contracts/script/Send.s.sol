@@ -4,25 +4,20 @@ pragma solidity ^0.8.28;
 
 import {Script} from "forge-std/Script.sol";
 
-import {CoprocessorCompleter} from "../src/CoprocessorCompleter.sol";
+import {Completer} from "../src/Completer.sol";
 import {Callback} from "../src/Callback.sol";
-import {Role, Message, Option} from "../src/Types.sol";
+import {Role, Message, Option, Request} from "../src/Types.sol";
 
 struct RawMessage {
     string content;
     string role;
 }
 
-struct RawOption {
-    string value;
-    string key;
-}
-
 struct RawRequest {
     uint256 maxCompletionTokens;
     RawMessage[] messages;
     string model;
-    RawOption[] options;
+    Option[] options;
 }
 
 library LibString {
@@ -67,43 +62,40 @@ library LibRawMessage {
     }
 }
 
-library LibRawOption {
-    using LibRawOption for RawOption;
+library LibRawRequest {
+    using LibRawMessage for RawMessage[];
 
-    function convert(RawOption memory rawOption) internal pure returns (Option memory) {
-        return Option({key: rawOption.key, value: rawOption.value});
-    }
-
-    function convert(RawOption[] memory rawOptions) internal pure returns (Option[] memory messages) {
-        messages = new Option[](rawOptions.length);
-        for (uint256 i; i < rawOptions.length; ++i) {
-            messages[i] = rawOptions[i].convert();
-        }
+    function convert(RawRequest memory rawRequest) internal pure returns (Request memory) {
+        return Request({
+            modelName: rawRequest.model,
+            maxCompletionTokens: rawRequest.maxCompletionTokens,
+            messages: rawRequest.messages.convert(),
+            options: rawRequest.options
+        });
     }
 }
 
 contract SendScript is Script {
-    using LibRawMessage for RawMessage[];
-    using LibRawOption for RawOption[];
+    using LibRawRequest for RawRequest;
 
     function send(
-        CoprocessorCompleter coprocessorCompleter,
+        Completer completer,
         Callback callback,
         string calldata requestJsonPath,
         string calldata completionIdFilePath
     ) external {
+        Request memory request = _loadRequestFromJsonFile(requestJsonPath);
+        uint256 cost = completer.getCompletionRequestCost(request);
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        uint256 completionId = completer.requestCompletion{value: cost}(request, callback);
+        vm.stopBroadcast();
+        vm.writeFile(completionIdFilePath, string.concat(vm.toString(completionId), "\n"));
+    }
+
+    function _loadRequestFromJsonFile(string calldata requestJsonPath) internal view returns (Request memory) {
         string memory requestJson = vm.readFile(requestJsonPath);
         bytes memory encodedRawRequest = vm.parseJson(requestJson);
         RawRequest memory rawRequest = abi.decode(encodedRawRequest, (RawRequest));
-        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-        uint256 completionId = coprocessorCompleter.requestCompletion(
-            rawRequest.model,
-            rawRequest.maxCompletionTokens,
-            rawRequest.messages.convert(),
-            rawRequest.options.convert(),
-            callback
-        );
-        vm.stopBroadcast();
-        vm.writeFile(completionIdFilePath, string.concat(vm.toString(completionId), "\n"));
+        return rawRequest.convert();
     }
 }
