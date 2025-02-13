@@ -30,7 +30,9 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         Message[] calldata messages,
         Option[] calldata options,
         Callback callback
-    ) external override returns (uint256 completionId) {
+    ) external payable override returns (uint256 completionId) {
+        uint256 cost = getCompletionRequestCost(modelName, maxCompletionTokens, messages);
+        require(cost <= msg.value, InsufficientPayment(cost, msg.value));
         completionId = nextCompletionId++;
         callCoprocessor(abi.encode(completionId, modelName, maxCompletionTokens, messages, options, callback));
     }

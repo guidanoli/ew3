@@ -6,6 +6,9 @@ import {Message, Option} from "./Types.sol";
 import {Callback} from "./Callback.sol";
 
 interface Completer {
+    /// @notice Payment is less than cost
+    error InsufficientPayment(uint256 cost, uint256 payment);
+
     /// @notice Get the cost (in Wei) of requesting a completion
     function getCompletionRequestCost(
         string calldata modelName,
@@ -21,5 +24,5 @@ interface Completer {
         Message[] calldata messages,
         Option[] calldata options,
         Callback callback
-    ) external returns (uint256 completionId);
+    ) external payable returns (uint256 completionId);
 }
