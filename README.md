@@ -91,3 +91,11 @@ This Shell script is as a wrapper around a [`cast logs`] command. Any extra argu
 
 [`forge script`]: https://book.getfoundry.sh/reference/forge/forge-script
 [`cast logs`]: https://book.getfoundry.sh/reference/cast/cast-logs
+
+## Starting frontend
+
+```
+cd frontend
+npm install
+npm run dev
+```
