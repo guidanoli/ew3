@@ -32,7 +32,7 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         busybox-static \
         libgomp1 \
-        python3 python3-venv python3-pip && \
+        python3 python3-venv python3-pip git && \
         pip install --break-system-packages -r /tmp/requirements.txt && \
     rm -rf /var/lib/apt/lists/* /var/log/* /var/cache/*
 

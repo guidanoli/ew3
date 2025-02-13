@@ -1,5 +1,5 @@
 --find-links https://prototyp3-dev.github.io/pip-wheels-riscv/wheels/
-python-cartesi
+python-cartesi @ git+https://github.com/prototyp3-dev/python-cartesi@feature/coprocessor
 pycryptodome==3.19.0
 requests
 pytest
