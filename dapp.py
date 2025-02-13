@@ -270,7 +270,7 @@ def handle_advance(rollup: Rollup, data: RollupData):
             for choice in results.choices
         ]
     )
-    notice_payload = abi.encode_model(completion_notice)
+    notice_payload = '0x' + abi.encode_model(completion_notice).hex()
     rollup.notice(notice_payload)
 
     server.stop()
