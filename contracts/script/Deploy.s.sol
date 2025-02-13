@@ -10,14 +10,22 @@ import {SimpleCallback} from "../src/SimpleCallback.sol";
 contract DeployScript is Script {
     bytes32 constant salt = bytes32(0);
 
-    function deploy(address taskIssuer, bytes32 machineHash, string calldata modelsJsonPath) external {
-        _deployCompleter(taskIssuer, machineHash, modelsJsonPath);
+    function deploy(address taskIssuer, bytes32 machineHash, string calldata modelsJsonPath, uint256 costMultiplier)
+        external
+    {
+        _deployCompleter(taskIssuer, machineHash, modelsJsonPath, costMultiplier);
         _deployCallback();
     }
 
-    function _deployCompleter(address taskIssuer, bytes32 machineHash, string calldata modelsJsonPath) internal {
+    function _deployCompleter(
+        address taskIssuer,
+        bytes32 machineHash,
+        string calldata modelsJsonPath,
+        uint256 costMultiplier
+    ) internal {
         address completerAddress;
-        CoprocessorCompleter.Model[] memory models = _loadModelsFromJsonFile(modelsJsonPath);
+        CoprocessorCompleter.Model[] memory models;
+        models = _multiplyCosts(_loadModelsFromJsonFile(modelsJsonPath), costMultiplier);
         // Compute target address
         {
             bytes memory args = abi.encode(taskIssuer, machineHash, models);
@@ -43,7 +51,8 @@ contract DeployScript is Script {
         }
         // Deploy contract if target address has no code yet
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-        CoprocessorCompleter completer = new CoprocessorCompleter{salt: salt}(taskIssuer, machineHash, models);
+        CoprocessorCompleter completer;
+        completer = new CoprocessorCompleter{salt: salt}(taskIssuer, machineHash, models);
         require(address(completer) == completerAddress, "address mismatch");
         vm.stopBroadcast();
     }
@@ -56,6 +65,36 @@ contract DeployScript is Script {
         string memory modelsJson = vm.readFile(modelsJsonPath);
         bytes memory encodedModels = vm.parseJson(modelsJson);
         return abi.decode(encodedModels, (CoprocessorCompleter.Model[]));
+    }
+
+    function _multiplyCosts(CoprocessorCompleter.Model[] memory models, uint256 multipler)
+        internal
+        pure
+        returns (CoprocessorCompleter.Model[] memory newModels)
+    {
+        newModels = new CoprocessorCompleter.Model[](models.length);
+        for (uint256 i; i < models.length; ++i) {
+            newModels[i] = _multiplyCosts(models[i], multipler);
+        }
+    }
+
+    function _multiplyCosts(CoprocessorCompleter.Model memory model, uint256 multipler)
+        internal
+        pure
+        returns (CoprocessorCompleter.Model memory)
+    {
+        return CoprocessorCompleter.Model({name: model.name, costs: _multiplyCosts(model.costs, multipler)});
+    }
+
+    function _multiplyCosts(CoprocessorCompleter.ModelCostTable memory costs, uint256 multipler)
+        internal
+        pure
+        returns (CoprocessorCompleter.ModelCostTable memory)
+    {
+        return CoprocessorCompleter.ModelCostTable({
+            perCompletionToken: costs.perCompletionToken * multipler,
+            perPromptToken: costs.perPromptToken * multipler
+        });
     }
 
     function _deployCallback() internal {
