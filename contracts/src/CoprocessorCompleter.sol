@@ -30,12 +30,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         completionId = nextCompletionId++;
         callCoprocessor(
             abi.encode(
-                completionId,
-                request.modelName,
-                request.maxCompletionTokens,
-                request.messages,
-                request.options,
-                callback
+                completionId, request.model, request.maxCompletionTokens, request.messages, request.options, callback
             )
         );
     }

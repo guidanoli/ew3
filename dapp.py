@@ -34,15 +34,9 @@ LOCAL_API_KEY = (
 ######################################################################
 
 
-class Role(Enum):
-    system = 0
-    assistant = 1
-    user = 2
-
-
 class Message(BaseModel):
-    role_id: abi.UInt256
     content: str
+    role: str
 
 
 class Option(BaseModel):
@@ -201,13 +195,7 @@ class LlamaCppServer:
             base_url=self.base_url
         )
 
-        payload = [
-            {
-                "role": Role(x.role_id).name,
-                "content": x.content
-            }
-            for x in messages
-        ]
+        payload = [dict(msg) for msg in messages]
 
         logger.debug(f"Running inference with payload: {repr(payload)}")
 
@@ -264,7 +252,7 @@ def handle_advance(rollup: Rollup, data: RollupData):
         ),
         messages=[
             Message(
-                role_id=Role[choice.message.role].value,
+                role=choice.message.role,
                 content=choice.message.content
             )
             for choice in results.choices

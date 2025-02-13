@@ -2,17 +2,10 @@
 
 pragma solidity ^0.8.28;
 
-/// @notice A role
-enum Role {
-    SYSTEM,
-    ASSISTANT,
-    USER
-}
-
 /// @notice A message from someone
 struct Message {
-    Role role;
     string content;
+    string role;
 }
 
 /// @notice Extra LLM options
@@ -29,8 +22,8 @@ struct Usage {
 
 /// @notice LLM completion request
 struct Request {
-    string modelName;
     uint256 maxCompletionTokens;
     Message[] messages;
+    string model;
     Option[] options;
 }
