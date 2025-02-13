@@ -27,11 +27,13 @@ LABEL io.cartesi.rollups.sdk_version=0.11.1
 LABEL io.cartesi.rollups.ram_size=4096Mi
 
 # Install required packages
+COPY ./requirements.txt /tmp/
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         busybox-static \
         libgomp1 \
-        python3 python3-venv python3-pip python3-openai python3-requests && \
+        python3 python3-venv python3-pip && \
+        pip install --break-system-packages -r /tmp/requirements.txt && \
     rm -rf /var/lib/apt/lists/* /var/log/* /var/cache/*
 
 # Install guest tools
@@ -50,7 +52,7 @@ RUN ln -s /llama.cpp/build/bin/llama-cli /usr/bin/llama-cli && \
 
 # Install dapp
 WORKDIR /home/dapp
-COPY ./dapp.py .
+COPY ./*.py .
 
 # Set entrypoint
 ENV ROLLUP_HTTP_SERVER_URL="http://127.0.0.1:5004"
