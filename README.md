@@ -29,6 +29,7 @@ cartesi-coprocessor start-devnet
 ```
 
 You can then later stop the devnet at any time by running the following command on the project root.
+This command can be really useful if you run into some error, and you have to restart your local devnet.
 
 ```sh
 cartesi-coprocessor stop-devnet
@@ -76,4 +77,17 @@ You should see the operator processing the input from the Docker Desktop UI.
 This command will create a `examples/request.json.completionId` with the completion ID of the request for future reference.
 You can delete this file afterwards, if you want.
 
+## Getting results back
+
+After your task is sent to the operator, a result should soon be posted back on-chain.
+If your task was sent using the method from the previous step, then you should be able to get your result back from the logs.
+However, parsing the event logs is not very straightforward with `cast`.
+Instead, we recommend you use the `getresult.sh` Shell script, and pass the completion ID as argument.
+This Shell script is as a wrapper around a [`cast logs`] command. Any extra arguments are passed to it.
+
+```sh
+./getresult.sh $(cat examples/request.json.completionId)
+```
+
 [`forge script`]: https://book.getfoundry.sh/reference/forge/forge-script
+[`cast logs`]: https://book.getfoundry.sh/reference/cast/cast-logs
