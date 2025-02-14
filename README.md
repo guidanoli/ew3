@@ -1,4 +1,11 @@
-# Experiment Week 3 Project
+# ChainThink
+
+ChainThink is an on-chain LLM API.
+Smart contracts can request completions using any of the supported models upon payment in Ether.
+The cost of requesting a completion is also calculated on-chain, as a worst-case estimate of the number of prompt tokens (as on-chain tokenization would be too expensive).
+Once the completion request is processed, any difference between the upfront payment and the actual cost (based on the actual number of prompt tokens) is reimbursed to the client.
+The request contains the name of the model, the maximum number of completion tokens, the list of messages, the list of options, and the address of a callback contract.
+The project also comes with a simple callback contract example used as a proof-of-concept.
 
 ## Setup
 
