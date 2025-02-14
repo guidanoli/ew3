@@ -43,6 +43,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         for (uint256 i; i < models.length; ++i) {
             Model memory model = models[i];
             modelCostTables[model.name.hash()] = model.costs;
+            emit RegisteredModel(model.name);
         }
     }
 
