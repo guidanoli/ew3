@@ -46,6 +46,14 @@ The third field is a string which encodes the model name.
 The names of available models can be derived from `RegisteredModel` events in the `Completer` interface.
 The fourth and last field is a list of options, typed as `Option[]`.
 
+### `ModelCostTable` (struct)
+
+This structure defines the costs (per prompt and completion token) for a model.
+It contains two unsigned 256-bit integer fields, `perCompletionToken` and `perPromptToken`, in this order.
+These costs are used to estimate the cost of a completion upon request (since the number of prompt tokens is unknown) and
+to calculate the exact cost upon request fulfillment.
+The difference (if any) is reimbursed to the original requester.
+
 ## [`Callback.sol`](./src/Callback.sol)
 
 This file defines the `Callback` interface, which is called whenever a completion request is fulfilled by an operator.
@@ -86,6 +94,11 @@ The error includes two arguments: the estimated request cost, and the payment va
 
 An event emitted whenever a new model is registered and available for completion requests.
 The only argument is the model name, which should be passed as-is when requesting completions.
+
+### `getModelCostTable` (view function)
+
+This view function returns the cost table for any given model.
+If the costs are zeroed, it probably means that the model is not available.
 
 ### `getCompletionRequestCost` (view function)
 
