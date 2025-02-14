@@ -14,6 +14,8 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     using Math for uint256;
     using String for string;
 
+    uint256 constant maxInjectedPromptTokens = 30;
+
     uint256 nextCompletionId;
 
     struct ModelCostTable {
@@ -98,6 +100,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     /// @notice Calculate the maximum number of prompt tokens from a list of messages
     /// @dev We use the sum of the message lengths as the upper bound
     function _calculateMaxPromptTokens(Message[] calldata messages) internal pure returns (uint256 sum) {
+        sum = maxInjectedPromptTokens;
         for (uint256 i; i < messages.length; ++i) {
             Message calldata message = messages[i];
             sum += bytes(message.content).length;
