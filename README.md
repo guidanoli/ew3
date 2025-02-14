@@ -1,6 +1,6 @@
-# ChainThink
+# ThinkChain
 
-ChainThink is an on-chain LLM API.
+ThinkChain is an on-chain LLM API.
 Smart contracts can request completions using any of the supported models upon payment in Ether.
 The cost of requesting a completion is also calculated on-chain, as a worst-case estimate of the number of prompt tokens (as on-chain tokenization would be too expensive).
 Once the completion request is processed, any difference between the upfront payment and the actual cost (based on the actual number of prompt tokens) is reimbursed to the client.
