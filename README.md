@@ -1,11 +1,18 @@
 # ThinkChain
 
-ThinkChain is an on-chain LLM API.
-Smart contracts can request completions using any of the supported models upon payment in Ether.
-The cost of requesting a completion is also calculated on-chain, as a worst-case estimate of the number of prompt tokens (as on-chain tokenization would be too expensive).
-Once the completion request is processed, any difference between the upfront payment and the actual cost (based on the actual number of prompt tokens) is reimbursed to the client.
-The request contains the name of the model, the maximum number of completion tokens, the list of messages, the list of options, and the address of a callback contract.
-The project also comes with a simple callback contract example used as a proof-of-concept.
+ThinkChain is an on-chain service that enables smart contracts to perform _verifiable_ large language model (LLM) inference.
+The service provides access to a variety of popular LLMs, such as DeepSeek-R1, DeepScaleR, Qwen2.5 and SmolLM2.
+A simple Solidity interface makes it easy for smart contracts to construct prompts and decode replies entirely on-chain.
+Completion requests are charged in Ether.
+
+_Client_ contracts send completion requests to the _Completer_ contract, which issues tasks to EigenLayer operators.
+Operators run the selected inference model inside a Cartesi Machine to guarantee determinism.
+Results are then signed by operators, and an aggregated signature is submitted to a solver.
+Once the solver submits the signed result on-chain, the _Completer_ forwards it to a _Callback_ contract, designated by the _Client_.
+
+ThinkChain is suitable for smart contracts that would benefit from on-chain access to LLMs for decision making, data analysis, content generation, or any other goal.
+_Client_ contracts can propagate the cost of using the service to their users, and even charge extra for their services.
+No matter the problem, ThinkChain has a model suitable for your use case.
 
 ## Setup
 
