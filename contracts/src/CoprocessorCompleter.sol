@@ -28,6 +28,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     struct PaymentReceipt {
         bytes32 modelHash;
         uint256 value;
+        address sender;
     }
 
     mapping(uint256 => PaymentReceipt) public paymentReceipts;
@@ -63,7 +64,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         uint256 payment = msg.value;
         require(cost <= payment, InsufficientPayment(cost, payment));
         completionId = nextCompletionId++;
-        paymentReceipts[completionId] = PaymentReceipt({modelHash: modelHash, value: payment});
+        paymentReceipts[completionId] = PaymentReceipt({modelHash: modelHash, value: payment, sender: msg.sender});
         callCoprocessor(
             abi.encode(
                 completionId, request.model, request.maxCompletionTokens, request.messages, request.options, callback
@@ -82,7 +83,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
         ModelCostTable storage modelCostTable = modelCostTables[paymentReceipt.modelHash];
         uint256 cost = _calculateCompletionCost(modelCostTable, usage.promptTokens, usage.completionTokens);
         uint256 refund = paymentReceipt.value.monus(cost).min(address(this).balance);
-        callback.receiveResult{value: refund}(completionId, messages, usage);
+        callback.receiveResult{value: refund}(completionId, paymentReceipt.sender, messages, usage);
     }
 
     /// @notice Calculate and return the hash of the model name, and calculate the completion request cost

@@ -4,16 +4,26 @@ pragma solidity ^0.8.28;
 
 import {Callback} from "./Callback.sol";
 import {Message, Usage} from "./Types.sol";
+import {Error} from "./Error.sol";
 
 contract SimpleCallback is Callback {
-    event ResultReceived(uint256 indexed completionId, Message[] messages, Usage usage);
+    using Error for bytes;
 
     /// @inheritdoc Callback
-    function receiveResult(uint256 completionId, Message[] calldata messages, Usage calldata usage)
+    function receiveResult(uint256 completionId, address requester, Message[] calldata messages, Usage calldata usage)
         external
         payable
         override
     {
-        emit ResultReceived(completionId, messages, usage);
+        bool success;
+        bytes memory returndata;
+
+        (success, returndata) = requester.call{value: msg.value}("");
+
+        if (!success) {
+            returndata.raise();
+        }
+
+        emit ResultReceived(completionId, msg.sender, requester, msg.value, messages, usage);
     }
 }
