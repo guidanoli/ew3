@@ -9,7 +9,7 @@ export function Models() {
   return (
     <Container>
       <Title order={1} mx="md">Models</Title>
-      <Grid mt="xl">
+      <Grid mt="md">
         {MODELS.map((model) => (
           <Grid.Col key={model.id} span={12}>
             <Container>
@@ -26,7 +26,7 @@ export function Models() {
                 <Divider size="sm" orientation="vertical" />
                 <Text size="sm">ETH {model.pricePerOutputToken.toFixed(4)}/output token</Text>
               </Group>
-              <Divider mt="lg"/>
+              <Divider mt="md"/>
             </Container>
           </Grid.Col>
         ))}
