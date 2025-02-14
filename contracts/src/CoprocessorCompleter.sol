@@ -18,7 +18,7 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
 
     uint256 nextCompletionId;
 
-    mapping(bytes32 => ModelCostTable) public modelCostTables;
+    mapping(bytes32 => ModelCostTable) modelCostTables;
 
     struct PaymentReceipt {
         bytes32 modelHash;
@@ -41,6 +41,11 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
             modelCostTables[model.name.hash()] = model.costs;
             emit RegisteredModel(model.name);
         }
+    }
+
+    /// @inheritdoc Completer
+    function getModelCostTable(string calldata model) external view override returns (ModelCostTable memory) {
+        return modelCostTables[model.hash()];
     }
 
     /// @inheritdoc Completer

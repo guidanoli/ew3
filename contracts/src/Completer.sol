@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.28;
 
-import {Request} from "./Types.sol";
+import {Request, ModelCostTable} from "./Types.sol";
 import {Callback} from "./Callback.sol";
 
 interface Completer {
@@ -11,6 +11,9 @@ interface Completer {
 
     /// @notice A model with such name has been registered
     event RegisteredModel(string model);
+
+    /// @notice Get the model cost of a model
+    function getModelCostTable(string calldata model) external view returns (ModelCostTable memory);
 
     /// @notice Get the cost (in Wei) of requesting a completion
     function getCompletionRequestCost(Request calldata request) external view returns (uint256);
