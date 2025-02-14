@@ -27,3 +27,9 @@ struct Request {
     string model;
     Option[] options;
 }
+
+/// @notice A cost table for a model in Wei
+struct ModelCostTable {
+    uint256 perCompletionToken;
+    uint256 perPromptToken;
+}

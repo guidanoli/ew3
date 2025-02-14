@@ -4,6 +4,7 @@ pragma solidity ^0.8.28;
 
 import {Script} from "forge-std/Script.sol";
 
+import {ModelCostTable} from "../src/Types.sol";
 import {CoprocessorCompleter} from "../src/CoprocessorCompleter.sol";
 import {SimpleCallback} from "../src/SimpleCallback.sol";
 
@@ -86,12 +87,12 @@ contract DeployScript is Script {
         return CoprocessorCompleter.Model({name: model.name, costs: _multiplyCosts(model.costs, multipler)});
     }
 
-    function _multiplyCosts(CoprocessorCompleter.ModelCostTable memory costs, uint256 multipler)
+    function _multiplyCosts(ModelCostTable memory costs, uint256 multipler)
         internal
         pure
-        returns (CoprocessorCompleter.ModelCostTable memory)
+        returns (ModelCostTable memory)
     {
-        return CoprocessorCompleter.ModelCostTable({
+        return ModelCostTable({
             perCompletionToken: costs.perCompletionToken * multipler,
             perPromptToken: costs.perPromptToken * multipler
         });

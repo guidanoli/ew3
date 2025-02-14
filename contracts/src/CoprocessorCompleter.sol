@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 
 import {CoprocessorAdapter} from "coprocessor-base-contract/CoprocessorAdapter.sol";
 
-import {Request, Message, Option, Usage} from "./Types.sol";
+import {Request, Message, Option, Usage, ModelCostTable} from "./Types.sol";
 import {Callback} from "./Callback.sol";
 import {Completer} from "./Completer.sol";
 import {Math} from "./Math.sol";
@@ -17,11 +17,6 @@ contract CoprocessorCompleter is CoprocessorAdapter, Completer {
     uint256 constant maxInjectedPromptTokens = 30;
 
     uint256 nextCompletionId;
-
-    struct ModelCostTable {
-        uint256 perCompletionToken;
-        uint256 perPromptToken;
-    }
 
     mapping(bytes32 => ModelCostTable) public modelCostTables;
 
