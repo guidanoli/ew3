@@ -4,7 +4,6 @@ import logging
 import requests
 import json
 from requests.exceptions import RequestException
-from enum import Enum
 from openai import OpenAI
 
 from cartesi import abi, DApp, Rollup, RollupData
@@ -18,8 +17,20 @@ logger = logging.getLogger(__name__)
 # Configuration constants
 ######################################################################
 
-KNOWN_MODELS = {
-    "SmolLM2-135M-Instruct": "models/SmolLM2-135M-Instruct-Q8_0.gguf",
+class ModelParameters(BaseModel):
+    model_path: str
+    context_size: int
+    cache_type_k: str
+    cache_type_v: str
+
+
+KNOWN_MODELS: dict[str, ModelParameters] = {
+    "SmolLM2-135M-Instruct": ModelParameters(
+        model_path="models/SmolLM2-135M-Instruct-Q8_0.gguf",
+        context_size=65536,
+        cache_type_k="f16",
+        cache_type_v="f32"
+    ),
 }
 
 LOCAL_API_KEY = (
@@ -120,15 +131,13 @@ class LlamaCppServer:
     def __init__(
         self,
         model_name: str,
-        model_path: str,
+        model_parameters: ModelParameters,
         max_completion_tokens: int = 32,
-        context_size: int = 0,
         seed: int = -1,
         temperature: float = 0.8,
     ):
         self.model_name = model_name
-        self.model_path = model_path
-        self.context_size = context_size
+        self.model_parameters = model_parameters
         self.seed = seed
         self.max_completion_tokens = max_completion_tokens
         self.temperature = temperature
@@ -144,9 +153,7 @@ class LlamaCppServer:
             return
 
         for option in options:
-            if option.key == "context_size":
-                self.context_size = int(option.value)
-            elif option.key == "seed":
+            if option.key == "seed":
                 self.seed = int(option.value)
             elif option.key == "temperature":
                 self.temperature = float(option.value)
@@ -165,8 +172,10 @@ class LlamaCppServer:
         self.process = subprocess.Popen(
             [
                 "llama-server",
-                "--model", self.model_path,
-                "--ctx-size", str(self.context_size),
+                "--model", self.model_parameters.model_path,
+                "--ctx-size", str(self.model_parameters.context_size),
+                "--cache-type-k", self.model_parameters.cache_type_k,
+                "--cache-type-v", self.model_parameters.cache_type_v,
                 "--seed", str(self.seed),
                 "--n-predict", str(self.max_completion_tokens),
                 "--no-warmup"
@@ -232,11 +241,11 @@ def handle_advance(rollup: Rollup, data: RollupData):
         logger.error(f"Unknown model: {model_name}")
         return False
 
-    model_path = KNOWN_MODELS[model_name]
+    model_params = KNOWN_MODELS[model_name]
 
     server = LlamaCppServer(
         model_name=model_name,
-        model_path=model_path,
+        model_parameters=model_params,
         max_completion_tokens=completion_input.max_completion_tokens,
     )
 
