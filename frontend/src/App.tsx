@@ -9,39 +9,32 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Models } from './pages/Models';
 import { Chat } from './pages/Chat';
-import { IconBrain, IconBrandGithub } from '@tabler/icons-react';
+import { IconBrain, IconBrandGithub} from '@tabler/icons-react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { getDefaultConfig, RainbowKitProvider, Chain } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
-/*
 const devnet = {
-  id: 43_114,
-  name: 'Avalanche',
-  iconUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/5805.png',
+  id: 31_337,
+  name: 'Local Devnet',
   iconBackground: '#fff',
-  nativeCurrency: { name: 'Avalanche', symbol: 'AVAX', decimals: 18 },
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://api.avax.network/ext/bc/C/rpc'] },
-  },
-  blockExplorers: {
-    default: { name: 'SnowTrace', url: 'https://snowtrace.io' },
+    default: { http: ['http://127.0.0.1:8545'] },
   },
   contracts: {
     multicall3: {
-      address: '0xca11bde05977b3631167028862be2a173976ca11',
-      blockCreated: 11_907_934,
+      address: '0x1fad424b9371FD5C95fE7198eF15cEE6b163375c',
+      blockCreated: 0,
     },
   },
 } as const satisfies Chain;
-*/
 
 const config = getDefaultConfig({
   appName: 'ThinkChain',
   projectId: 'YOUR_PROJECT_ID',
-  chains: [mainnet],
+  chains: [devnet],
   ssr: false, // If your dApp uses server side rendering (SSR)
 });
 const queryClient = new QueryClient();
@@ -54,7 +47,7 @@ export default function App() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
+        <RainbowKitProvider >
           <MantineProvider theme={theme}>
             <BrowserRouter>
               <AppShell
