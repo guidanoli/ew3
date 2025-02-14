@@ -2,16 +2,16 @@ import { Container, Title, Text, Button, Space, Group, Grid } from '@mantine/cor
 import { Link } from 'react-router-dom';
 import { IconMessageFilled } from '@tabler/icons-react';
 import { Card, Badge } from '@mantine/core';
-import { TRENDING_MODELS } from '../types/types';
+import { TRENDING_MODELS, CATEGORY_COLORS } from '../types/types';
 
 export function Home() {
   const chatIcon = <IconMessageFilled size={22} />;
 
   const trendingModels = TRENDING_MODELS.map((item) => (
-    <Grid.Col span={4}>
+    <Grid.Col span={6}>
       <Card shadow="sm" padding="lg" radius="md" withBorder h={150}>
         <Text fw={500}>{item.name}</Text>
-        <Badge color={item.color}>{item.category}</Badge>
+        <Badge color={CATEGORY_COLORS[item.category]}>{item.category}</Badge>
         <Text size="sm" c="dimmed" py="xs">{item.description}</Text>
       </Card>
     </Grid.Col>

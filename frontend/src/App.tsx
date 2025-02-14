@@ -90,7 +90,7 @@ export default function App() {
                   </Routes>
                   <Center>
                     <Text py="md" size="lg" mr="xs" c="dimmed">©2025 ThinkChain</Text>
-                    <Button component="a" color="gray" variant="subtle" px="xs" href="https://github.com/guidanoli/ew3"><IconBrandGithub/></Button>
+                    <Button component="a" color="gray" variant="subtle" px="xs" href="https://github.com/guidanoli/thinkchain"><IconBrandGithub/></Button>
                   </Center>
                 </AppShell.Main>
               </AppShell>
