@@ -14,6 +14,14 @@ ThinkChain is suitable for smart contracts that would benefit from on-chain acce
 _Client_ contracts can propagate the cost of using the service to their users, and even charge extra for their services.
 No matter the problem, ThinkChain has a model suitable for your use case.
 
+## Features
+
+- Access to a wide variety of LLMs
+- Simple Solidity interface
+- Configurable inference options
+- Fast finality
+- Accepts payments in Ether
+
 ## Setup
 
 This repository contains [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
