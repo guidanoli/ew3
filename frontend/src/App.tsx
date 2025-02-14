@@ -63,6 +63,7 @@ export default function App() {
                       <Group ml="xl" gap="sm" visibleFrom="sm">
                         <Button component={Link} to="/models" variant="default">Models</Button>
                         <Button component={Link} to="/chat" variant="default">Chat</Button>
+                        <Button component="a" href="https://github.com/guidanoli/thinkchain/tree/main/contracts" variant="light">Docs</Button>
                         <ConnectButton/>
                       </Group>
                     </Group>
