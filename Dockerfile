@@ -4,6 +4,15 @@
 ## models downloader
 FROM scratch AS models
 ADD https://huggingface.co/unsloth/SmolLM2-135M-Instruct-GGUF/resolve/main/SmolLM2-135M-Instruct-Q8_0.gguf /models/SmolLM2-135M-Instruct-Q8_0.gguf
+ADD https://huggingface.co/unsloth/SmolLM2-360M-Instruct-GGUF/resolve/main/SmolLM2-360M-Instruct-Q8_0.gguf /models/SmolLM2-360M-Instruct-Q8_0.gguf
+ADD https://huggingface.co/unsloth/SmolLM2-1.7B-Instruct-GGUF/resolve/main/SmolLM2-1.7B-Instruct-Q8_0.gguf /models/SmolLM2-1.7B-Instruct-Q8_0.gguf
+ADD https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/Qwen2.5-0.5B-Instruct-Q8_0.gguf /models/Qwen2.5-0.5B-Instruct-Q8_0.gguf
+ADD https://huggingface.co/bartowski/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-1.5B-Instruct-Q8_0.gguf /models/Qwen2.5-1.5B-Instruct-Q8_0.gguf
+ADD https://huggingface.co/bartowski/Qwen2.5-Coder-0.5B-Instruct-GGUF/resolve/main/Qwen2.5-Coder-0.5B-Instruct-Q8_0.gguf /models/Qwen2.5-Coder-0.5B-Instruct-Q8_0.gguf
+ADD https://huggingface.co/bartowski/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-Coder-1.5B-Instruct-Q8_0.gguf /models/Qwen2.5-Coder-1.5B-Instruct-Q8_0.gguf
+ADD https://huggingface.co/bartowski/Qwen2.5-Math-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-Math-1.5B-Instruct-Q8_0.gguf /models/Qwen2.5-Math-1.5B-Instruct-Q8_0.gguf
+ADD https://huggingface.co/unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf /models/DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf
+ADD https://huggingface.co/bartowski/agentica-org_DeepScaleR-1.5B-Preview-GGUF/resolve/main/agentica-org_DeepScaleR-1.5B-Preview-Q8_0.gguf /models/DeepScaleR-1.5B-Preview-Q8_0.gguf
 
 ###############################
 # llama.cpp builder

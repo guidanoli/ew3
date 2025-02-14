@@ -3,6 +3,10 @@
     "maxCompletionTokens": 1,
     "messages": [
         {
+            "role": "system",
+            "content": "You are an helpful assistant"
+        },
+        {
             "role": "user",
             "content": "Who are you?"
         }
@@ -10,7 +14,7 @@
     "options": [
         {
             "key": "temperature",
-            "value": "0.7"
+            "value": "0.8"
         },
         {
             "key": "seed",

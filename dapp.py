@@ -27,8 +27,62 @@ class ModelParameters(BaseModel):
 KNOWN_MODELS: dict[str, ModelParameters] = {
     "SmolLM2-135M-Instruct": ModelParameters(
         model_path="models/SmolLM2-135M-Instruct-Q8_0.gguf",
-        context_size=65536,
+        context_size=8192,
         cache_type_k="f16",
+        cache_type_v="f32"
+    ),
+    "SmolLM2-360M-Instruct": ModelParameters(
+        model_path="models/SmolLM2-360M-Instruct-Q8_0.gguf",
+        context_size=8192,
+        cache_type_k="f16",
+        cache_type_v="f32"
+    ),
+    "Qwen2.5-0.5B-Instruct": ModelParameters(
+        model_path="models/Qwen2.5-0.5B-Instruct-Q8_0.gguf",
+        context_size=32768,
+        cache_type_k="f16",
+        cache_type_v="f32"
+    ),
+    "Qwen2.5-Coder-0.5B-Instruct": ModelParameters(
+        model_path="models/Qwen2.5-Coder-0.5B-Instruct-Q8_0.gguf",
+        context_size=32768,
+        cache_type_k="f16",
+        cache_type_v="f32"
+    ),
+    "Qwen2.5-1.5B-Instruct": ModelParameters(
+        model_path="models/Qwen2.5-1.5B-Instruct-Q8_0.gguf",
+        context_size=32768,
+        cache_type_k="f16",
+        cache_type_v="f32"
+    ),
+    "Qwen2.5-Coder-1.5B-Instruct": ModelParameters(
+        model_path="models/Qwen2.5-Coder-1.5B-Instruct-Q8_0.gguf",
+        context_size=32768,
+        cache_type_k="f16",
+        cache_type_v="f32"
+    ),
+    "Qwen2.5-Math-1.5B-Instruct": ModelParameters(
+        model_path="models/Qwen2.5-Math-1.5B-Instruct-Q8_0.gguf",
+        context_size=4096,
+        cache_type_k="f16",
+        cache_type_v="f32"
+    ),
+    "SmolLM2-1.7B-Instruct": ModelParameters(
+        model_path="models/SmolLM2-1.7B-Instruct-Q8_0.gguf",
+        context_size=8192,
+        cache_type_k="f16",
+        cache_type_v="f32"
+    ),
+    "DeepSeek-R1-Distill-Qwen-1.5B": ModelParameters(
+        model_path="models/DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf",
+        context_size=65536,
+        cache_type_k="q8_0",
+        cache_type_v="f32"
+    ),
+    "DeepScaleR-1.5B-Preview": ModelParameters(
+        model_path="models/DeepScaleR-1.5B-Preview-Q8_0.gguf",
+        context_size=65536,
+        cache_type_k="q8_0",
         cache_type_v="f32"
     ),
 }
@@ -133,7 +187,7 @@ class LlamaCppServer:
         model_name: str,
         model_parameters: ModelParameters,
         max_completion_tokens: int = 32,
-        seed: int = -1,
+        seed: int = 0,
         temperature: float = 0.8,
     ):
         self.model_name = model_name
@@ -207,12 +261,14 @@ class LlamaCppServer:
 
         payload = [dict(msg) for msg in messages]
 
-        logger.debug(f"Running inference with payload: {repr(payload)}")
+        logger.info(f"Running inference with payload: {repr(payload)}")
 
         completion = client.chat.completions.create(
             model=self.model_name,
             messages=payload
         )
+
+        logger.info(f"Inference finish with completion: {repr(completion)}")
 
         return completion
 
