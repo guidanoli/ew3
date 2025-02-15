@@ -6,6 +6,7 @@ output.car.json
 output.cid
 output.size
 *.completionId
+*.result
 __pycache__/
 *.py[cod]
 build/

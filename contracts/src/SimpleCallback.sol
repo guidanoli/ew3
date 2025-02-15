@@ -9,6 +9,8 @@ import {Error} from "./Error.sol";
 contract SimpleCallback is Callback {
     using Error for bytes;
 
+    uint256 immutable _deploymentBlockNumber = block.number;
+
     /// @inheritdoc Callback
     function receiveResult(uint256 completionId, address requester, Message[] calldata messages, Usage calldata usage)
         external
@@ -25,5 +27,10 @@ contract SimpleCallback is Callback {
         }
 
         emit ResultReceived(completionId, msg.sender, requester, msg.value, messages, usage);
+    }
+
+    /// @inheritdoc Callback
+    function getDeploymentBlockNumber() external view override returns (uint256) {
+        return _deploymentBlockNumber;
     }
 }

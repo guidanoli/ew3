@@ -4,7 +4,8 @@ fs_permissions = [
     { access = "read-write", path = "./deployments" },
     { access = "read", path = "./requests" },
     { access = "read", path = "./models" },
-    { access = "read-write", path = "./completionIds" }
+    { access = "read-write", path = "./completionIds" },
+    { access = "read-write", path = "./results" },
 ]
 
 [fmt]

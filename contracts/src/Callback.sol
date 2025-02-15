@@ -20,4 +20,7 @@ interface Callback {
     function receiveResult(uint256 completionId, address requester, Message[] calldata messages, Usage calldata usage)
         external
         payable;
+
+    /// @notice Get number of block in which the contract was deployed
+    function getDeploymentBlockNumber() external view returns (uint256);
 }

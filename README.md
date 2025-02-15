@@ -56,11 +56,14 @@ We'll choose an example request but you can provide any.
 libexec/send.sh examples/request.json --fork-url localhost:8545
 ```
 
+This will create a file with the same name as the request file, but appended with `.completionId`.
 Once the request is fulfilled, you can retrieve the result.
 
 ```sh
-libexec/getresult.sh $(cat examples/request.json.completionId)
+libexec/getresult.sh examples/request.json.completionId --fork-url localhost:8545
 ```
+
+This will create a JSON file with the same name as the completion ID file, but appended with `.result`.
 
 ## Documentation
 
