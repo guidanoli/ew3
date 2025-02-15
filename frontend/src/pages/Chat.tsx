@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Container, Title, Select, Textarea, Button, Paper, Stack, Text, Loader, Group } from '@mantine/core';
-import { IconBrain } from '@tabler/icons-react';
+import { Container, Title, Select, Textarea, Button, Paper, Stack, Text, Loader, Group, NumberInput, Slider, Grid, Divider} from '@mantine/core';
 import { Message } from '../types/types';
 import { MODELS } from '../types/types';
 import { Request, Message as ABIMessage, Option, ABI_COMPLETER, ABI_SIMPLE_CALLBACK } from '../types/ABIs';
@@ -11,6 +10,8 @@ import { getCompletionIdFromReceipt } from '../types/receipt';
 
 export function Chat() {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [maxCompletionTokens, setMaxCompletionTokens] = useState(100);
+  const [temperature, setTemperature] = useState(0.8);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const {writeContractAsync} = useWriteContract();
@@ -49,10 +50,10 @@ export function Chat() {
     });
 
     const request: Request = {
-      maxCompletionTokens: 10,
+      maxCompletionTokens: maxCompletionTokens,
       messages: requestMessages,
       model: selectedModel,
-      options: [{key: 'temperature', value: '0.7'} as Option],
+      options: [{key: 'temperature', value: temperature.toString()} as Option],
     };
 
     const requestCost = await readContract(config, {
@@ -120,14 +121,46 @@ export function Chat() {
   return (
     <Container>
       <Title order={1}>Chat</Title>
-      <Select
-        label="Select Model"
-        placeholder="Choose a model"
-        data={MODELS.map(model => ({ value: model.id, label: model.name }))}
-        value={selectedModel}
-        onChange={setSelectedModel}
-        mb="md"
-      />
+      <Grid my="lg">
+        <Grid.Col span={{base: 12, sm: 6}}>
+          <Select
+            label="Model"
+            placeholder="Choose a model"
+            data={MODELS.map(model => ({ value: model.id, label: model.name }))}
+            value={selectedModel}
+            onChange={setSelectedModel}
+          />
+        </Grid.Col>
+        <Grid.Col span={{base: 12, sm: 3}}>
+          <NumberInput
+          label="Max Tokens"
+            value={maxCompletionTokens}
+            onChange={(value) => setMaxCompletionTokens(Number(value))}
+            min={1}
+            max={511}
+            allowDecimal={false}
+          />
+        </Grid.Col>
+        <Grid.Col span={{base: 12, sm: 3}}>
+          <Text size="sm" fw={500}>Temperature</Text>
+          <Slider
+          value={temperature}
+          onChange={setTemperature}
+          min={0.5}
+          max={1}
+          step={0.1}
+          marks={[
+            {value: 0.5, label: '0.5'},
+            {value: 0.6, label: '0.6'},
+            {value: 0.7, label: '0.7'},
+            {value: 0.8, label: '0.8'},
+            {value: 0.9, label: '0.9'},
+            {value: 1, label: '1'},
+          ]}
+          />
+        </Grid.Col>
+      </Grid>
+      <Divider my="xl" />
       <Stack gap="md">
         {messages.map((message, index) => (
           <Paper
