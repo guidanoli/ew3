@@ -2,13 +2,12 @@
 
 pragma solidity ^0.8.28;
 
-import {Script} from "forge-std/Script.sol";
-
+import {BaseScript} from "./Base.s.sol";
 import {Completer} from "../src/Completer.sol";
 import {Callback} from "../src/Callback.sol";
 import {Message, Option, Request} from "../src/Types.sol";
 
-contract SendScript is Script {
+contract SendScript is BaseScript {
     function send(
         Completer completer,
         Callback callback,
@@ -17,7 +16,7 @@ contract SendScript is Script {
     ) external {
         Request memory request = _loadRequestFromJsonFile(requestJsonPath);
         uint256 cost = completer.getCompletionRequestCost(request);
-        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        vm.startBroadcast(_getPrivateKey());
         uint256 completionId = completer.requestCompletion{value: cost}(request, callback);
         vm.stopBroadcast();
         vm.writeFile(completionIdFilePath, string.concat(vm.toString(completionId), "\n"));

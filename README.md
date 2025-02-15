@@ -46,7 +46,6 @@ cartesi-coprocessor publish --network devnet
 Then, you may deploy the contracts.
 
 ```sh
-export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 libexec/deploy.sh --fork-url localhost:8545
 ```
 
@@ -54,7 +53,6 @@ Once the contracts are deployed, you can send a completion request on-chain.
 We'll choose an example request but you can provide any.
 
 ```sh
-export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 libexec/send.sh examples/request.json --fork-url localhost:8545
 ```
 

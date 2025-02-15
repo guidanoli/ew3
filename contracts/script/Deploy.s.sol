@@ -2,13 +2,12 @@
 
 pragma solidity ^0.8.28;
 
-import {Script} from "forge-std/Script.sol";
-
+import {BaseScript} from "./Base.s.sol";
 import {ModelCostTable} from "../src/Types.sol";
 import {CoprocessorCompleter} from "../src/CoprocessorCompleter.sol";
 import {SimpleCallback} from "../src/SimpleCallback.sol";
 
-contract DeployScript is Script {
+contract DeployScript is BaseScript {
     bytes32 constant salt = bytes32(0);
 
     function deploy(address taskIssuer, bytes32 machineHash, string calldata modelsJsonPath, uint256 costMultiplier)
@@ -51,7 +50,7 @@ contract DeployScript is Script {
             if (size != 0) return;
         }
         // Deploy contract if target address has no code yet
-        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        vm.startBroadcast(_getPrivateKey());
         CoprocessorCompleter completer;
         completer = new CoprocessorCompleter{salt: salt}(taskIssuer, machineHash, models);
         require(address(completer) == completerAddress, "address mismatch");
