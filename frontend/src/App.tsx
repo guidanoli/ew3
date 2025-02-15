@@ -11,32 +11,11 @@ import { Models } from './pages/Models';
 import { Chat } from './pages/Chat';
 import { IconBrain, IconBrandGithub} from '@tabler/icons-react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { getDefaultConfig, RainbowKitProvider, Chain } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { config } from './wagmiConfig';
 
-const devnet = {
-  id: 31_337,
-  name: 'Local Devnet',
-  iconBackground: '#fff',
-  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-  rpcUrls: {
-    default: { http: ['http://127.0.0.1:8545'] },
-  },
-  contracts: {
-    multicall3: {
-      address: '0x1fad424b9371FD5C95fE7198eF15cEE6b163375c',
-      blockCreated: 0,
-    },
-  },
-} as const satisfies Chain;
-
-const config = getDefaultConfig({
-  appName: 'ThinkChain',
-  projectId: 'YOUR_PROJECT_ID',
-  chains: [devnet],
-  ssr: false, // If your dApp uses server side rendering (SSR)
-});
 const queryClient = new QueryClient();
 
 const theme = createTheme({});
