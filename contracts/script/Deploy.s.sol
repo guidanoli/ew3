@@ -123,7 +123,7 @@ contract DeployScript is BaseScript {
             if (size != 0) return;
         }
         // Deploy contract if target address has no code yet
-        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        vm.startBroadcast(_getPrivateKey());
         SimpleCallback simpleCallback = new SimpleCallback{salt: salt}();
         require(address(simpleCallback) == simpleCallbackAddress, "address mismatch");
         vm.stopBroadcast();
