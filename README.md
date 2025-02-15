@@ -37,13 +37,6 @@ In order to run ThinkChain locally, you first need to start up a devnet.
 cartesi-coprocessor start-devnet
 ```
 
-> [!NOTE]
-> You can stop the devnet at any time by running the following command.
-> It might be useful if you run into some error and need to restart the devnet.
-> ```sh
-> cartesi-coprocessor stop-devnet
-> ```
-
 Once the devnet is up, you may publish the machine.
 
 ```sh
@@ -71,10 +64,33 @@ Once the request is fulfilled, you can retrieve the result.
 ./getresult.sh $(cat examples/request.json.completionId)
 ```
 
-## Starting frontend
+## Documentation
 
-```
+You can learn more about ThinkChain smart contracts [here](./contracts/README.md).
+
+## Use cases
+
+This repository also includes a proof-of-concept chat app that uses ThinkChain.
+You can run it locally and interact with it through a web front-end.
+
+```sh
 cd frontend
 npm install
 npm run dev
 ```
+
+## Related projects
+
+- [Cartesi Co-processor](https://github.com/zippiehq/cartesi-coprocessor)
+- [Cartesi](https://cartesi.io/)
+- [EigenLayer](https://www.eigenlayer.xyz/)
+
+## Authors
+
+- Eduardo Bart ([edubart](https://github.com/edubart))
+- Felipe F. Grael ([felipefg](https://github.com/felipefg))
+- Guilherme Dantas ([guidanoli](https://github.com/guidanoli))
+
+## License
+
+ThinkChain is licensed under GPL-3.0.
