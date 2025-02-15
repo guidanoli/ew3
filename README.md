@@ -10,9 +10,9 @@ Operators run the selected inference model inside a Cartesi Machine to guarantee
 Results are then signed by operators, and an aggregated signature is submitted to a solver.
 Once the solver submits the signed result on-chain, the _Completer_ forwards it to a _Callback_ contract, designated by the _Client_.
 
-ThinkChain is suitable for smart contracts that would benefit from on-chain access to LLMs for decision making, data analysis, content generation, or any other goal.
+ThinkChain is suitable for smart contracts that would benefit from on-chain access to LLMs.
+Examples of use cases include AI agents, AI-assisted decision making, data analysis, and content generation.
 _Client_ contracts can propagate the cost of using the service to their users, and even charge extra for their services.
-No matter the problem, ThinkChain has a model suitable for your use case.
 
 ## Features
 
