@@ -46,24 +46,14 @@ cartesi-coprocessor publish --network devnet
 Then, you may deploy the contracts.
 
 ```sh
-libexec/deploy.sh --fork-url localhost:8545
+make deploy
 ```
 
-Once the contracts are deployed, you can send a completion request on-chain.
-We'll choose an example request but you can provide any.
+Once the contracts are deployed, you can interactively request a completion.
 
 ```sh
-libexec/send.sh examples/request.json --fork-url localhost:8545
+make request
 ```
-
-This will create a file with the same name as the request file, but appended with `.completionId`.
-Once the request is fulfilled, you can retrieve the result.
-
-```sh
-libexec/getresult.sh examples/request.json.completionId --fork-url localhost:8545
-```
-
-This will create a JSON file with the same name as the completion ID file, but appended with `.result`.
 
 ## Documentation
 

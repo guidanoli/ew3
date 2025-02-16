@@ -9,5 +9,8 @@ cd contracts
 mkdir -p models
 models_json_path=$(mktemp models/XXXXXX.json)
 cp "$original_models_json_path" "$models_json_path"
-forge script "$@" --broadcast DeployScript --sig 'deploy(address,bytes32,string,uint256)' "$task_issuer" "$machine_hash" "$models_json_path" "$cost_multiplier"
+deploySig='deploy(address,bytes32,string,uint256)'
+deployArgs=("$task_issuer" "$machine_hash" "$models_json_path" "$cost_multiplier")
+output=$(forge script "$@" --broadcast DeployScript --sig "$deploySig" "${deployArgs[@]}") || echo "$output"
 rm "$models_json_path"
+echo "Contracts are deployed!"
