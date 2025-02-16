@@ -64,18 +64,8 @@ You can learn more about ThinkChain smart contracts [here](./contracts/README.md
 This repository also includes a proof-of-concept chat app that uses ThinkChain.
 You can run it locally and interact with it through a web front-end.
 
-The first step is to set up the environment variables. Copy the `.env.example` file to `.env` and fill in the missing values.
-
 ```sh
-cd frontend
-cp .env.example .env
-```
-
-The Completion contract address can be found in the `../contracts/deployments/CoprocessorCompleter` file, while the Callback contract address can be found at `../contracts/deployments/SimpleCallback`. Once the values are set, you can run the frontend.
-
-```sh
-npm install
-npm run dev
+make run-frontend-dev
 ```
 
 ## Related projects
