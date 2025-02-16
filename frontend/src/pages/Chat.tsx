@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Title, Select, Textarea, Button, Paper, Stack, Text, Loader, Group, NumberInput, Slider, Grid, Divider} from '@mantine/core';
 import { Message } from '../types/types';
 import { MODELS } from '../types/types';
@@ -7,6 +7,8 @@ import { readContract, waitForTransactionReceipt, watchContractEvent } from '@wa
 import { config } from '../wagmiConfig';
 import { useWriteContract } from 'wagmi';
 import { getCompletionIdFromReceipt } from '../types/receipt';
+import { useDebounce } from '../hooks';
+import { formatEther } from 'viem';
 
 export function Chat() {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -18,6 +20,50 @@ export function Chat() {
 
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(null);
   const [completionId, setCompletionId] = useState<bigint | null>(null);
+
+  const [estimateFetching, setEstimateFetching] = useState(false);
+  const [estimate, setEstimate] = useState<bigint | null>(null);
+  const debouncedInput = useDebounce(input, 500);
+
+  useEffect(() => {
+    if (!debouncedInput || !selectedModel) return;
+
+    const fetchEstimate = async () => {
+
+      const requestMessages = messages.map(message => ({
+        role: message.role,
+        content: message.content,
+      })) as ABIMessage[];
+
+      requestMessages.push({
+        role: 'user',
+        content: debouncedInput,
+      });
+
+      setEstimateFetching(true);
+      setEstimate(null);
+
+      const request: Request = {
+        maxCompletionTokens: maxCompletionTokens,
+        messages: requestMessages,
+        model: selectedModel,
+        options: [{key: 'temperature', value: temperature.toString()} as Option],
+      };
+
+      const requestCost = await readContract(config, {
+        address: import.meta.env.VITE_COMPLETION_CONTRACT_ADDRESS,
+        abi: ABI_COMPLETER,
+        functionName: 'getCompletionRequestCost',
+        args: [request],
+      });
+
+      setEstimate(requestCost as bigint);
+      setEstimateFetching(false);
+    };
+
+    fetchEstimate().catch(console.error);
+
+  }, [debouncedInput, maxCompletionTokens, temperature, selectedModel]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +139,7 @@ export function Chat() {
       abi: ABI_SIMPLE_CALLBACK,
       eventName: 'ResultReceived',
       poll: true,
-      onLogs: (logs) => {
+      onLogs: (logs: any[]) => {
         console.log("Completion notice: ", logs)
         for (const log of logs) {
           if (log.args.completionId != _completionId) continue;
@@ -213,13 +259,21 @@ export function Chat() {
           mt="xl"
           disabled={!!completionId}
         />
-        <Button
-          type="submit"
-          disabled={!selectedModel || !input.trim() || !!completionId}
-          mt="md"
-        >
-          Send
-        </Button>
+        <Group justify="flex-start">
+          <Button
+            type="submit"
+            disabled={!selectedModel || !input.trim() || !!completionId}
+            mt="md"
+          >
+            Send
+          </Button>
+          {estimateFetching && (
+            <Text size="sm" mt="sm" c="gray">Estimating inference cost...</Text>
+          )}
+          {!estimateFetching && estimate && (
+            <Text size="sm" mt="sm" c="gray">Estimated cost: {formatEther(estimate)} ETH</Text>
+          )}
+        </Group>
       </form>
     </Container>
   );
