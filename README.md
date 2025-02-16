@@ -22,6 +22,13 @@ _Client_ contracts can propagate the cost of using the service to their users, a
 - Fast finality
 - Accepts payments in Ether
 
+## Overview
+
+For a quick overview and demo of the project,
+you can watch the presentation submitted for [Cartesi X EigenLayer Experimentation Week](https://cartesi-x-eigenlayer.devfolio.co/):
+
+[![ThinkChain Quick Demo](https://img.youtube.com/vi/Ni0cgn2cR2o/0.jpg)](https://youtu.be/Ni0cgn2cR2o)
+
 ## Getting Started
 
 First, please make sure your machine contains all the necessary [dependencies](https://docs.mugen.builders/cartesi-co-processor-tutorial/installation).
@@ -67,6 +74,11 @@ You can run it locally and interact with it through a web front-end.
 ```sh
 make run-frontend-dev
 ```
+
+In order to interact in the frontend you will need to import a wallet with funds,
+you could import the wallet with the private key
+`0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`
+in Metamask browser extension.
 
 ## Related projects
 
