@@ -138,6 +138,7 @@ rm "$request_json_path"
 echo "Completion requested!"
 completion_id=$(cat $completion_id_file_path)
 rm "$completion_id_file_path"
+mkdir -p results
 result_json_path=$(mktemp results/XXXXXX.json)
 getResultSig='getResult(address,uint256,address,string)'
 getResultArgs=("$SimpleCallback" "$completion_id" "$CoprocessorCompleter" "$result_json_path")
