@@ -133,7 +133,7 @@ echo "$request" > "$request_json_path"
 completion_id_file_path=$(mktemp completionIds/XXXXXX)
 sendSig='send(address,address,string,string)'
 sendArgs=("$CoprocessorCompleter" "$SimpleCallback" "$request_json_path" "$completion_id_file_path")
-output=$(forge script "$@" --broadcast SendScript --sig "$sendSig" "${sendArgs[@]}") || echo "$output"
+forge script "$@" --quiet --broadcast SendScript --sig "$sendSig" "${sendArgs[@]}"
 rm "$request_json_path"
 echo "Completion requested!"
 completion_id=$(cat $completion_id_file_path)
@@ -143,11 +143,9 @@ result_json_path=$(mktemp results/XXXXXX.json)
 getResultSig='getResult(address,uint256,address,string)'
 getResultArgs=("$SimpleCallback" "$completion_id" "$CoprocessorCompleter" "$result_json_path")
 ts_start=$(date +%s)
-awaiting_msg="Awaiting result..."
-printf "$awaiting_msg"
 while true
 do
-    output=$(forge script "$@" GetResultScript --sig "$getResultSig" "${getResultArgs[@]}") || printf "\n$output\n"
+    forge script "$@" --quiet GetResultScript --sig "$getResultSig" "${getResultArgs[@]}"
     if [ -s $result_json_path ]
     then
         printf "\n"
@@ -164,7 +162,7 @@ do
             timedelta_str="$minutes minute$([[ $minutes -eq 1 ]] || echo s) and $seconds second$([[ $seconds -eq 1 ]] || echo s)"
         fi
         printf "\33[2K\r"
-        printf "$awaiting_msg ($timedelta_str)"
+        printf "Awaiting result... ($timedelta_str)"
         sleep 5
     fi
 done

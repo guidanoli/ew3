@@ -11,6 +11,6 @@ models_json_path=$(mktemp models/XXXXXX.json)
 cp "$original_models_json_path" "$models_json_path"
 deploySig='deploy(address,bytes32,string,uint256)'
 deployArgs=("$task_issuer" "$machine_hash" "$models_json_path" "$cost_multiplier")
-output=$(forge script "$@" --broadcast DeployScript --sig "$deploySig" "${deployArgs[@]}") || echo "$output"
+forge script "$@" --quiet --broadcast DeployScript --sig "$deploySig" "${deployArgs[@]}"
 rm "$models_json_path"
 echo "Contracts are deployed!"
