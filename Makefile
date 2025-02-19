@@ -1,5 +1,6 @@
 RPC_URL= localhost:8545
 PROJECT_ID= thinkchain
+TMP_DIRS= broadcast cache completionIds deployments models out requests results
 
 .PHONY: deploy
 deploy:
@@ -8,6 +9,10 @@ deploy:
 .PHONY: request
 request: deploy
 	@contracts/request.sh --fork-url $(RPC_URL)
+
+.PHONY: clean
+clean:
+	@cd contracts && rm -rfv $(TMP_DIRS)
 
 .PHONY: setup-frontend
 setup-frontend:
