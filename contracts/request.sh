@@ -130,6 +130,7 @@ SimpleCallback=$(cat deployments/SimpleCallback)
 mkdir -p requests
 request_json_path=$(mktemp requests/XXXXXX.json)
 echo "$request" > "$request_json_path"
+mkdir -p completionIds
 completion_id_file_path=$(mktemp completionIds/XXXXXX)
 sendSig='send(address,address,string,string)'
 sendArgs=("$CoprocessorCompleter" "$SimpleCallback" "$request_json_path" "$completion_id_file_path")
